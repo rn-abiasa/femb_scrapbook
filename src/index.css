@@ -389,5 +389,222 @@ button:focus-visible {
   outline-offset: 3px;
 }
 
-/* Animasi sengaja tetap jalan walau pengaturan "reduce motion" di HP aktif:
-   gerakannya hanya transform ringan (tanpa animasi layout). */
+/* ---------- Animasi dekorasi ----------
+   Sengaja TIDAK memakai @media (prefers-reduced-motion: reduce), karena di banyak HP
+   pengaturan itu aktif (mode hemat daya / aksesibilitas) dan mematikan semua animasi.
+   Supaya tetap ringan: hanya transform + opacity (dikomposit GPU), tanpa animasi
+   layout/filter, jumlah elemen sedikit, dan dijeda saat tab tidak terlihat. */
+
+/* splash */
+.splash {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  background: var(--color-desk);
+  animation: splash-out 0.6s ease-in 2s forwards;
+}
+.splash-inner {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 0.75rem;
+}
+.splash-bf {
+  width: 64px;
+  animation: splash-rise 1s ease-out both, splash-float 2.4s ease-in-out 1s infinite alternate;
+}
+.splash-text {
+  font-size: 1.5rem;
+  color: rgb(236 230 216 / 0.8);
+  animation: splash-rise 1s ease-out 0.4s both;
+}
+.splash-sp {
+  position: absolute;
+  color: var(--color-butter);
+  animation: twinkle 1.6s ease-in-out infinite;
+}
+.splash-sp-a {
+  top: -6px;
+  left: -18px;
+  width: 14px;
+}
+.splash-sp-b {
+  top: 26px;
+  right: -22px;
+  width: 10px;
+  animation-delay: -0.8s;
+}
+@keyframes splash-rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0) scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes splash-float {
+  to {
+    transform: translate3d(0, -8px, 0);
+  }
+}
+@keyframes splash-out {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+/* kepakan sayap (dipakai splash + kupu-kupu) */
+.bf-wing {
+  transform-origin: 50% 60%;
+  animation: bf-flap 0.45s ease-in-out infinite alternate;
+  will-change: transform;
+}
+@keyframes bf-flap {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0.35);
+  }
+}
+
+/* lapisan dekorasi di belakang scrapbook */
+.ambient {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  contain: layout paint;
+}
+.ambient[data-paused="true"] * {
+  animation-play-state: paused !important;
+}
+
+.firefly {
+  position: absolute;
+  left: var(--l);
+  top: var(--t);
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background: #f3d77a;
+  box-shadow: 0 0 8px 3px rgb(223 174 60 / 0.55);
+  opacity: 0;
+  will-change: transform, opacity;
+  animation:
+    ff-drift var(--dur) ease-in-out var(--delay) infinite alternate,
+    ff-glow var(--glow) ease-in-out var(--delay) infinite;
+}
+@keyframes ff-drift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(var(--dx), var(--dy), 0);
+  }
+}
+@keyframes ff-glow {
+  0%,
+  100% {
+    opacity: 0.05;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+/* HP: kunang-kunang lebih sedikit */
+@media (max-width: 767px) {
+  .firefly:nth-child(n + 8) {
+    display: none;
+  }
+}
+
+.bf {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--w);
+  opacity: 0.8;
+  will-change: transform;
+  animation: bf-path var(--dur) linear var(--delay) infinite;
+}
+@keyframes bf-path {
+  0% {
+    transform: translate3d(var(--x0), var(--y0), 0) rotate(10deg);
+    animation-timing-function: ease-in-out;
+  }
+  33% {
+    transform: translate3d(var(--x1), var(--y1), 0) rotate(-12deg);
+    animation-timing-function: ease-in-out;
+  }
+  66% {
+    transform: translate3d(var(--x2), var(--y2), 0) rotate(14deg);
+    animation-timing-function: ease-in-out;
+  }
+  100% {
+    transform: translate3d(var(--x3), var(--y3), 0) rotate(-8deg);
+  }
+}
+/* HP: hanya 2 kupu-kupu */
+@media (max-width: 767px) {
+  .bf:nth-child(n + 15) {
+    display: none;
+  }
+}
+
+/* tombol Buka */
+.twinkle {
+  animation: twinkle 1.8s ease-in-out infinite;
+  pointer-events: none;
+}
+.twinkle-b {
+  animation-delay: -0.9s;
+}
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scale(0.7);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
+.open-btn {
+  cursor: pointer;
+  touch-action: manipulation;
+  transition:
+    transform 0.25s cubic-bezier(0.3, 1.6, 0.5, 1),
+    rotate 0.25s ease,
+    scale 0.25s ease,
+    background-color 0.2s ease;
+  animation: btn-breathe 2.4s ease-in-out infinite;
+}
+@keyframes btn-breathe {
+  50% {
+    scale: 1.05;
+  }
+}
+@media (hover: hover) and (pointer: fine) {
+  .open-btn:hover {
+    animation: none;
+    scale: 1.1;
+    rotate: 2deg;
+    transform: translate3d(0, -1cqw, 0);
+    background-color: #f4d3dc;
+  }
+}
+/* sentuh (HP): tidak ada hover, jadi beri umpan balik saat ditekan */
+.open-btn:active {
+  animation: none;
+  scale: 0.93;
+  background-color: #f4d3dc;
+}

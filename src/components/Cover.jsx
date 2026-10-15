@@ -33,13 +33,17 @@ export default function Cover({ name, age, onOpen }) {
 
       <Flower className="absolute top-[140cqw] left-[4.5cqw] w-[13cqw]" />
 
-      <button
-        type="button"
-        onClick={onOpen}
-        className="washi absolute bottom-[9cqw] left-1/2 h-[17cqw] w-[41cqw] -translate-x-1/2 -rotate-2 font-script text-[8.5cqw] leading-none transition-transform active:scale-95"
-      >
-        Buka
-      </button>
+      <div className="absolute bottom-[9cqw] left-1/2 h-[17cqw] w-[41cqw] -translate-x-1/2">
+        <Sparkle className="twinkle absolute -top-[3cqw] -left-[4cqw] w-[4.5cqw] text-chalk/80" />
+        <Sparkle className="twinkle twinkle-b absolute -right-[3cqw] -bottom-[2cqw] w-[3.5cqw] text-rose" />
+        <button
+          type="button"
+          onClick={onOpen}
+          className="washi open-btn h-full w-full -rotate-2 font-script text-[8.5cqw] leading-none"
+        >
+          Buka
+        </button>
+      </div>
     </div>
   );
 }
