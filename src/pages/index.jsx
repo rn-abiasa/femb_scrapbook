@@ -1,7 +1,9 @@
+import Scrapbook from "../components/Scrapbook";
+
 export default function Index() {
   return (
-    <>
-      <main>Happy</main>
-    </>
+    <main>
+      <Scrapbook />
+    </main>
   );
 }
