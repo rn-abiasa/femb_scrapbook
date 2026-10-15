@@ -3,7 +3,7 @@ export const words = {
   // panel kiri
   leftCaption: "Happy birthday",
   leftCaptionHand: "(untuk seseorang yang spesial banget)",
-  left: "Ini tempat untuk cerita pertama kalian. Tulis hari pertama bertemu, hal kecil yang masih diingat. Ganti teks ini dengan suratmu sendiri.",
+  left: "Dear my favorite person. Semoga semua hal baik selalu menemukanmu. Semoga senyummu selalu punya alasan untuk hadir. And may life always be kind to you. 💗",
 
   // panel tengah (nama otomatis ditambahkan di belakang mainTitle)
   mainTitle: "Happy Birthday dear",
@@ -13,7 +13,8 @@ export const words = {
 
   // panel kanan
   rightLabel: "I love you",
-  right: "Terima kasih sudah jadi tempat cerita paling aman. Tulis surat penutup di sini, pakai bahasamu sendiri.",
+  right:
+    "Thank you for every smile and little moment. I'm truly grateful to have you.",
   sticker: "Besties",
 
   // tombol

@@ -11,8 +11,7 @@ import TimelinePanel from "./Timeline";
 
 const STEP = 0.55; // jeda antar lipatan (detik)
 const isDesktop = () => window.matchMedia("(min-width: 768px)").matches;
-const prefersReducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-const scrollBehavior = () => (prefersReducedMotion() ? "auto" : "smooth");
+const scrollBehavior = () => "smooth";
 
 export default function Scrapbook() {
   const [isOpen, setIsOpen] = useState(false); // lipatan 1-3
@@ -97,7 +96,7 @@ export default function Scrapbook() {
       return;
     }
     scroller.scrollTo({ left: coverScrollLeft(), behavior: scrollBehavior() });
-    window.setTimeout(finish, prefersReducedMotion() ? 0 : 450);
+    window.setTimeout(finish, 450);
   };
 
   // di desktop, roda mouse vertikal menggeser buku ke samping
@@ -132,7 +131,7 @@ export default function Scrapbook() {
           isOpen ? "snap-touch overflow-x-auto" : "overflow-x-hidden"
         }`}
       >
-        <div className="flex h-full w-max min-w-full items-center justify-center px-4">
+        <div className="pad-x flex h-full w-max min-w-full items-center justify-center">
           <div className="stage">
             <div
               className="fold"

@@ -62,9 +62,24 @@ body {
     border-radius: 4px;
   }
 }
+/* layar sentuh: satu gesekan = pindah tepat ke satu panel berikutnya */
 @media (pointer: coarse) {
   .snap-touch {
-    scroll-snap-type: x proximity;
+    scroll-snap-type: x mandatory;
+  }
+  .snap-touch .panel {
+    scroll-snap-stop: always;
+  }
+}
+
+/* padding samping buku; di HP dibuat supaya panel pertama dan terakhir
+   bisa tepat di tengah layar */
+.pad-x {
+  padding-inline: 1rem;
+}
+@media (max-width: 767px) {
+  .pad-x {
+    padding-inline: max(1rem, calc((100vw - var(--pw)) / 2));
   }
 }
 
@@ -175,6 +190,11 @@ body {
   width: 1rem;
   height: 1px;
   pointer-events: none;
+}
+@media (max-width: 767px) {
+  .fold[data-extras="true"]::after {
+    width: max(1rem, calc((100vw - var(--pw)) / 2));
+  }
 }
 
 @keyframes plant-pop {
@@ -369,18 +389,5 @@ button:focus-visible {
   outline-offset: 3px;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .panel-a,
-  .panel-b,
-  .panel-c,
-  .panel-d {
-    transition-duration: 0.01ms;
-    transition-delay: 0s !important;
-  }
-  .plant-pop {
-    animation: none;
-  }
-  .lightbox[open] {
-    animation: none;
-  }
-}
+/* Animasi sengaja tetap jalan walau pengaturan "reduce motion" di HP aktif:
+   gerakannya hanya transform ringan (tanpa animasi layout). */
