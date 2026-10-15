@@ -41,6 +41,34 @@ body {
   --ph: calc(var(--pw) * 1.75);
 }
 
+/* scroll horizontal buku: tersembunyi di layar sentuh, tipis di desktop */
+.h-scroll {
+  scrollbar-width: none;
+}
+.h-scroll::-webkit-scrollbar {
+  display: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .h-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: #3a3536 transparent;
+  }
+  .h-scroll::-webkit-scrollbar {
+    display: block;
+    height: 8px;
+  }
+  .h-scroll::-webkit-scrollbar-thumb {
+    background: #3a3536;
+    border-radius: 4px;
+  }
+}
+@media (pointer: coarse) {
+  .snap-touch {
+    scroll-snap-type: x proximity;
+  }
+}
+
+/* daftar yang digulir vertikal di dalam panel */
 .no-scrollbar {
   scrollbar-width: none;
 }
@@ -82,28 +110,80 @@ body {
   transform-origin: 0 50%;
 }
 
+/* Lipatan 4 (C) menempel di sisi kanan lipatan 3 (B),
+   lipatan 5 (D) menempel di sisi kanan C. Posisi absolut supaya
+   tidak menggeser tata letak buku 3 lipatan. */
+.panel-c,
+.panel-d {
+  position: absolute;
+  top: 0;
+  left: 100%;
+  transform-origin: 0 50%;
+}
+
 .panel-a,
-.panel-b {
+.panel-b,
+.panel-c,
+.panel-d {
   transition: transform 1.25s cubic-bezier(0.45, 0.05, 0.2, 1);
   will-change: transform;
 }
-/* buka: lipatan A dulu, lalu B. tutup: B dulu, lalu A */
-.fold[data-open="true"] .panel-b {
-  transition-delay: 0.55s;
+/* jeda tiap lipatan diatur dari React lewat --da .. --dd */
+.panel-a {
+  transition-delay: var(--da, 0s);
 }
-.fold[data-open="false"] .panel-a {
-  transition-delay: 0.55s;
+.panel-b {
+  transition-delay: var(--db, 0s);
+}
+.panel-c {
+  transition-delay: var(--dc, 0s);
+}
+.panel-d {
+  transition-delay: var(--dd, 0s);
 }
 
+/* tertutup: A dan B terlipat di atas panel tengah */
 .fold[data-open="false"] .panel-a {
-  transform: translateZ(2px) rotateY(180deg);
+  transform: translateZ(4px) rotateY(180deg);
 }
 .fold[data-open="false"] .panel-b {
-  transform: translateZ(1px) rotateY(-180deg);
+  transform: translateZ(2px) rotateY(-180deg);
 }
 .fold[data-open="true"] .panel-a,
 .fold[data-open="true"] .panel-b {
   transform: none;
+}
+
+/* C terlipat ke belakang B, D terlipat ke belakang C (tersembunyi) */
+.fold[data-extras="false"] .panel-c {
+  transform: translateZ(-0.8px) rotateY(180deg);
+}
+.fold[data-extras="false"] .panel-d {
+  transform: translateZ(0.8px) rotateY(-180deg);
+}
+.fold[data-extras="true"] .panel-c,
+.fold[data-extras="true"] .panel-d {
+  transform: none;
+}
+
+/* ruang kosong di sisi kanan supaya lipatan 5 tidak mepet tepi layar */
+.fold[data-extras="true"]::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: calc(100% + var(--pw) * 2);
+  width: 1rem;
+  height: 1px;
+  pointer-events: none;
+}
+
+@keyframes plant-pop {
+  from {
+    transform: scale(0.8);
+  }
+}
+.plant-pop {
+  animation: plant-pop 0.25s ease-out;
 }
 
 .face-back {
@@ -172,17 +252,17 @@ body {
   .photo:active {
     transform: scale(0.97);
   }
+  /* bingkai: ukuran dari className, gambar diletakkan absolut di dalamnya */
   .photo-frame {
-    padding: 1.8cqw;
+    --pad: 1.8cqw;
   }
   .photo-thin {
-    padding: 0.9cqw;
+    --pad: 0.9cqw;
   }
   .photo-in {
-    position: relative;
+    position: absolute;
+    inset: var(--pad, 0px);
     display: block;
-    width: 100%;
-    height: 100%;
     overflow: hidden;
   }
   .photo:focus-visible {
@@ -291,9 +371,14 @@ button:focus-visible {
 
 @media (prefers-reduced-motion: reduce) {
   .panel-a,
-  .panel-b {
+  .panel-b,
+  .panel-c,
+  .panel-d {
     transition-duration: 0.01ms;
     transition-delay: 0s !important;
+  }
+  .plant-pop {
+    animation: none;
   }
   .lightbox[open] {
     animation: none;

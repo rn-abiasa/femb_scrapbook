@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { placeholderBackground } from "../lib/photo-utils";
 
 export default function Lightbox({ photos, index, onClose, onStep }) {
   const ref = useRef(null);
@@ -29,23 +30,24 @@ export default function Lightbox({ photos, index, onClose, onStep }) {
         <>
           <figure className="m-0 flex flex-col items-center gap-4 px-3">
             <div className="relative -rotate-1 bg-chalk p-2.5 pb-12 shadow-2xl">
-              {photo.src ? (
-                <img
-                  src={photo.src}
-                  alt={photo.caption}
-                  decoding="async"
-                  className="block max-h-[64svh] max-w-[82vw] object-contain"
-                />
-              ) : (
-                <div
-                  className="grid aspect-[4/5] w-[min(78vw,380px)] place-items-center font-display text-2xl text-chalk/70"
-                  style={{
-                    background: `linear-gradient(135deg, hsl(${photo.hue} 38% 34%), hsl(${photo.hue + 30} 42% 22%))`,
-                  }}
-                >
-                  foto {photo.id + 1}
-                </div>
-              )}
+              {/* ukuran bingkai tetap; gambar ditampilkan utuh (contain) */}
+              <div className="relative aspect-[4/5] w-[min(80vw,360px)] bg-paper">
+                {photo.src ? (
+                  <img
+                    src={photo.src}
+                    alt={photo.caption}
+                    decoding="async"
+                    className="absolute inset-0 block h-full w-full max-w-none object-contain"
+                  />
+                ) : (
+                  <div
+                    className="absolute inset-0 grid place-items-center font-hand text-2xl text-chalk/70"
+                    style={{ background: placeholderBackground(photo) }}
+                  >
+                    foto
+                  </div>
+                )}
+              </div>
               <figcaption className="absolute inset-x-0 bottom-2.5 text-center font-hand text-xl font-bold text-paper">
                 {photo.caption}
               </figcaption>

@@ -1,6 +1,9 @@
 import { usePhotos } from "../lib/photo-context";
+import { placeholderBackground } from "../lib/photo-utils";
 
-export function PhotoImage({ photo, className = "" }) {
+// Gambar mengisi bingkai secara absolut, jadi ukuran bingkai tidak pernah
+// ikut ukuran asli gambar (selalu dari className: lebar + aspect-ratio).
+export function PhotoImage({ photo }) {
   if (photo.src) {
     return (
       <img
@@ -9,37 +12,35 @@ export function PhotoImage({ photo, className = "" }) {
         loading="lazy"
         decoding="async"
         draggable="false"
-        className={`block h-full w-full object-cover ${className}`}
+        className="absolute inset-0 block h-full w-full max-w-none object-cover"
       />
     );
   }
   return (
     <span
       aria-hidden="true"
-      className={`grid h-full w-full place-items-center font-hand text-chalk/70 ${className}`}
-      style={{
-        background: `linear-gradient(135deg, hsl(${photo.hue} 22% 30%), hsl(${photo.hue + 30} 26% 20%))`,
-        fontSize: "4.4cqw",
-      }}
+      className="absolute inset-0 grid place-items-center font-hand text-chalk/70"
+      style={{ background: placeholderBackground(photo), fontSize: "4.4cqw" }}
     >
-      foto {photo.id + 1}
+      foto
     </span>
   );
 }
 
 /**
+ * photo:   objek { id, src, caption }
  * variant: "frame" (bingkai krem tebal) | "thin" (bingkai tipis, untuk kolase)
- * tape: "left" | "right" | "center" | null (washi tape mauve di sudut atas)
+ * tape:    "left" | "right" | "center" | null (washi tape mauve)
+ * Ukuran diatur lewat className (mis. "aspect-[5/4] w-[53cqw]").
  */
 export default function Photo({
-  index,
+  photo,
   variant = "frame",
   tape = "left",
   tilt = 0,
   className = "",
 }) {
-  const { photos, open } = usePhotos();
-  const photo = photos[index];
+  const { open } = usePhotos();
   if (!photo) return null;
 
   const tapeClass = tape === "center" ? "" : tape ? `tape-${tape}` : "";
@@ -47,7 +48,7 @@ export default function Photo({
   return (
     <button
       type="button"
-      onClick={() => open(index)}
+      onClick={() => open(photo.id)}
       aria-label={`Lihat foto: ${photo.caption}`}
       className={`photo photo-${variant} ${className}`}
       style={{ rotate: `${tilt}deg` }}
